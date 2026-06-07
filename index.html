@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StyleWise · 你的智能衣櫃</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Parisienne&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3efe9; --card:#fffdfa; --ink:#211e1b; --muted:#9a9088;
+    --line:#e7ded3; --accent:#9c7d62; --accent-soft:#ece3d8; --good:#7d917a; --warn:#c39a6c;
+    --shadow:0 1px 2px rgba(60,45,30,.04);
+    --serif:"Cormorant Garamond","Songti TC",Georgia,serif;
+    --script:"Parisienne",cursive;
+    --sans:"Jost",-apple-system,"PingFang TC","Helvetica Neue",sans-serif;
+  }
+  *{box-sizing:border-box}
+  button{font-family:var(--sans)}
+  body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:.2px}
+  header{padding:34px 24px 0;max-width:920px;margin:0 auto}
+  .brand{font-family:var(--serif);font-size:34px;font-weight:500;letter-spacing:4px;text-transform:uppercase;line-height:1}
+  .brand span{color:var(--accent)}
+  .tag{color:var(--muted);font-size:12px;margin-top:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:300}
+  nav{display:flex;gap:4px;margin:26px auto 0;max-width:920px;padding:0 24px;border-bottom:1px solid var(--line)}
+  nav button{flex:1;border:none;background:transparent;padding:16px 6px;font-size:12px;color:var(--muted);
+    border-bottom:1px solid transparent;margin-bottom:-1px;cursor:pointer;font-weight:400;letter-spacing:1px;transition:.2s}
+  nav button:hover{color:var(--ink)}
+  nav button.active{color:var(--ink);border-color:var(--ink)}
+  main{max-width:920px;margin:0 auto;padding:28px 24px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{background:var(--ink);color:#faf7f3;border:1px solid var(--ink);border-radius:2px;padding:13px 20px;font-size:12px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:.2s}
+  .btn:hover{background:transparent;color:var(--ink)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--ink)}
+  .btn.sm{padding:8px 13px;font-size:11px;letter-spacing:1px}
+  select,input{font-family:var(--sans);font-size:14px;padding:11px 12px;border:1px solid var(--line);border-radius:2px;background:var(--card);color:var(--ink);letter-spacing:.3px}
+  select:focus,input:focus{outline:none;border-color:var(--accent)}
+  label{font-size:11px;color:var(--muted);display:block;margin-bottom:6px;font-weight:400;letter-spacing:1px;text-transform:uppercase}
+  .field{flex:1;min-width:120px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:26px;box-shadow:var(--shadow)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;margin-top:24px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:4px;overflow:hidden;position:relative;transition:.2s}
+  .item:hover{border-color:#d8ccbd}
+  .item .thumb{position:relative;height:170px;display:flex;align-items:center;justify-content:center;font-size:46px;background:linear-gradient(160deg,#f1e9df,#e7ddd0)}
+  .item .thumb img{width:100%;height:100%;object-fit:cover}
+  .item .thumb.cut{background:linear-gradient(160deg,#f6f0e7,#ece1d2)}
+  .item .thumb.cut img{object-fit:contain;padding:8px}
+  .item .thumb .flip{position:absolute;top:8px;right:8px;border:none;background:rgba(33,30,27,.55);color:#fff;border-radius:50%;width:26px;height:26px;font-size:13px;line-height:1;cursor:pointer;backdrop-filter:blur(2px);padding:0}
+  .item .thumb .flip:hover{background:rgba(33,30,27,.85)}
+  .chkline{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink);text-transform:none;letter-spacing:.2px}
+  .chkline input{width:auto;padding:0;margin:0;flex:none}
+  .item .body{padding:13px 14px 15px}
+  .item .nm{font-weight:400;font-size:14px;letter-spacing:.3px}
+  .item .meta{font-size:10px;color:var(--muted);margin-top:5px;letter-spacing:1px;text-transform:uppercase}
+  .item .acts{display:flex;gap:6px;margin-top:12px}
+  .item .acts button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:2px;padding:6px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:.2s}
+  .item .acts button:hover{border-color:var(--ink);color:var(--ink)}
+  .pill{display:inline-block;background:transparent;color:var(--accent);font-size:9px;padding:2px 9px;border:1px solid var(--accent);border-radius:20px;font-weight:400;letter-spacing:1px;text-transform:uppercase}
+  .empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:14px}
+  .look{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:16px;margin-top:20px}
+  .look .item .thumb{height:150px}
+  .caption{background:var(--accent-soft);border-radius:4px;padding:18px 20px;margin-top:18px;font-size:14px;line-height:1.7}
+  .caption .lbl{font-size:10px;color:var(--accent);font-weight:400;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+  .stat{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+  .stat:last-child{border:none}
+  .stat .v{font-family:var(--serif);font-weight:500;font-size:22px}
+  .bar{height:4px;background:var(--accent-soft);border-radius:0;overflow:hidden;margin-top:8px}
+  .bar>i{display:block;height:100%;background:var(--accent)}
+  h3{font-family:var(--serif);font-size:23px;font-weight:500;margin:0 0 6px;letter-spacing:.3px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 18px;line-height:1.6;font-weight:300}
+  .insight{display:block;padding:15px 17px;background:var(--accent-soft);border-radius:4px;margin-top:12px;font-size:13px;line-height:1.7}
+  .insight b{color:var(--accent);font-weight:500}
+  dialog{border:none;border-radius:4px;padding:0;box-shadow:0 30px 80px rgba(40,30,20,.22);max-width:400px;width:92%}
+  dialog::backdrop{background:rgba(33,30,27,.4);backdrop-filter:blur(2px)}
+  .dlg{padding:30px}
+  .dlg h3{margin-bottom:20px;font-size:24px}
+  .dlg .row{margin-bottom:14px}
+  .x{position:absolute;top:16px;right:18px;border:none;background:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1}
+  .hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;font-weight:300}
+  /* onboarding */
+  .onboard{position:fixed;inset:0;background:var(--bg);z-index:60;overflow:auto;display:none}
+  .onboard.show{display:block}
+  .ob{max-width:580px;margin:0 auto;padding:64px 28px 72px}
+  .ob .brand{font-size:40px;font-weight:500}
+  .ob .lead{color:var(--muted);font-size:14px;margin-top:14px;line-height:1.7;font-weight:300}
+  .ob-q{margin:38px 0 4px;font-family:var(--serif);font-weight:500;font-size:21px}
+  .ob-q small{font-family:var(--sans);font-weight:300;color:var(--muted);font-size:11px;margin-left:8px;letter-spacing:1px;text-transform:uppercase}
+  .chips{margin-top:10px}
+  .chip{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:2px;padding:10px 18px;margin:7px 7px 0 0;cursor:pointer;font-size:13px;letter-spacing:.5px;user-select:none;transition:.18s}
+  .chip:hover{border-color:var(--ink)}
+  .chip.on{background:var(--ink);color:#faf7f3;border-color:var(--ink)}
+  .ob .btn.big{width:100%;padding:17px;font-size:13px;margin-top:42px;border-radius:2px}
+  .ob .skip{display:block;text-align:center;color:var(--muted);font-size:12px;margin-top:18px;background:none;border:none;width:100%;cursor:pointer;letter-spacing:1px;text-transform:uppercase}
+  .pref-link{background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-weight:400;letter-spacing:.5px}
+  .swatches{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .sw{text-align:center;font-size:10px;color:var(--muted);letter-spacing:.5px}
+  .sw i{display:block;width:54px;height:54px;border-radius:2px;margin-bottom:6px;border:1px solid rgba(0,0,0,.05)}
+  .season-badge{display:inline-block;font-size:11px;font-weight:400;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--accent);padding:5px 16px;border-radius:2px}
+  /* editorial hero cover (Parisian minimal + handwritten · centered) */
+  .hero{position:relative;width:100%;height:400px;overflow:hidden;margin-top:20px;
+    background:#2a241e;display:flex;align-items:center;justify-content:center}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;
+    filter:grayscale(.3) brightness(.66) contrast(1.04)}
+  .hero::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(18,15,12,.45),rgba(18,15,12,.28) 45%,rgba(18,15,12,.55));}
+  .hero .inner{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:0 28px;width:100%;color:#fdf9f3;text-align:center}
+  .hero .kicker{font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:300;opacity:.92}
+  .hero .script{font-family:var(--script);font-size:48px;line-height:1;display:block;margin:6px 0 -2px;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,8.4vw,56px);line-height:1.08;margin:8px auto 0;
+    white-space:nowrap;text-shadow:0 2px 30px rgba(0,0,0,.45)}
+  .hero .lede{font-size:14px;font-weight:300;margin:16px auto 0;letter-spacing:.5px;max-width:34ch;opacity:.95;line-height:1.6}
+  .hero .deco{font-size:12px;letter-spacing:8px;margin-top:18px;opacity:.8}
+  .hero .deco::before{content:"✦ ✶ ✦"}
+  @media(max-width:600px){.hero{height:340px;margin-top:14px}.hero .script{font-size:38px}}
+  /* closet category zones (Codibook-style) */
+  .catbar{display:flex;gap:8px;overflow-x:auto;padding:6px 0 16px;margin-top:8px}
+  .catbar::-webkit-scrollbar{display:none}
+  .catchip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:2px;padding:8px 16px;cursor:pointer;
+    font-size:12px;letter-spacing:1px;color:var(--muted);white-space:nowrap;transition:.18s}
+  .catchip:hover{border-color:var(--ink);color:var(--ink)}
+  .catchip.on{background:var(--ink);color:#faf7f3;border-color:var(--ink)}
+  .catchip small{opacity:.55;margin-left:6px;font-size:11px}
+  .zone{margin-top:30px}
+  .zone:first-child{margin-top:6px}
+  .zone-h{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+  .zone-h .t{font-family:var(--serif);font-size:23px;font-weight:500;letter-spacing:.5px}
+  .zone-h .en{font-family:var(--script);font-size:22px;color:var(--accent);letter-spacing:.3px;line-height:1}
+  .zone-h .n{margin-left:auto;font-size:11px;color:var(--muted);letter-spacing:1px}
+  .recat{margin-top:10px;width:100%;font-size:11px;padding:6px 8px;color:var(--muted);letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING / PREFERENCES -->
+<div class="onboard" id="onboard">
+  <div class="ob">
+    <div class="brand">Style<span style="color:var(--accent)">Wise</span></div>
+    <div class="lead">先花 30 秒讓我認識你,之後的穿搭建議與洞察就會更貼近你。</div>
+
+    <div class="ob-q">你的年齡<small>單選</small></div>
+    <div class="chips" data-group="age" data-single="1">
+      <span class="chip">18–24</span><span class="chip">25–29</span><span class="chip">30–34</span><span class="chip">35+</span>
+    </div>
+
+    <div class="ob-q">性別<small>單選</small></div>
+    <div class="chips" data-group="gender" data-single="1">
+      <span class="chip">女</span><span class="chip">男</span><span class="chip">不設限</span>
+    </div>
+
+    <div class="ob-q">平常最常出現的穿衣場合<small>可複選</small></div>
+    <div class="chips" data-group="occasions">
+      <span class="chip">上學 / 上班</span><span class="chip">面試</span><span class="chip">約會</span>
+      <span class="chip">日常休閒</span><span class="chip">正式場合</span><span class="chip">運動</span>
+    </div>
+
+    <div class="ob-q">你常穿的品牌<small>可複選,選不到沒關係</small></div>
+    <div class="chips" data-group="brands">
+      <span class="chip">Uniqlo</span><span class="chip">GU</span><span class="chip">Zara</span><span class="chip">H&M</span>
+      <span class="chip">Lululemon</span><span class="chip">Aritzia</span><span class="chip">COS</span>
+      <span class="chip">Brandy Melville</span><span class="chip">Nike</span><span class="chip">二手 / Vintage</span><span class="chip">其他</span>
+    </div>
+
+    <div class="ob-q">要記錄每件衣服的價格嗎?<small>單選</small></div>
+    <div class="lead" style="margin-top:2px">開啟才會看到 CP 值 / 花費分析。只想用搭配功能的話,選「不用」就不會出現金額欄。</div>
+    <div class="chips" data-group="trackPrice" data-single="1">
+      <span class="chip">不用,我只想搭配</span><span class="chip">要,順便看花費分析</span>
+    </div>
+
+    <button class="btn big" onclick="saveProfile()">進入我的衣櫃 →</button>
+    <button class="skip" onclick="saveProfile(true)">先跳過,直接逛逛</button>
+  </div>
+</div>
+
+<header>
+  <div class="brand">Style<span>Wise</span></div>
+  <div class="tag" id="welcomeTag">給留學生 & 年輕女生的智能衣櫃 — 用你已經有的衣服,穿出對的樣子 · <button class="pref-link" onclick="openOnboard()">編輯偏好</button></div>
+</header>
+<section class="hero">
+  <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=70"
+       alt="" onerror="this.style.display='none'">
+  <div class="inner">
+    <div class="kicker">Personal Wardrobe Edit</div>
+    <span class="script">your wardrobe,</span>
+    <h1>穿出你已經有的衣服</h1>
+    <div class="lede">不買更多,先穿懂手上的。為留學生與懂色彩的年輕女生打造。</div>
+    <div class="deco"></div>
+  </div>
+</section>
+<nav>
+  <button data-tab="closet" class="active">👗 衣櫃</button>
+  <button data-tab="stylist">✨ 搭配</button>
+  <button data-tab="color">🎨 色彩</button>
+  <button data-tab="wish">🛒 想買</button>
+  <button data-tab="insights">📊 洞察</button>
+</nav>
+<main>
+  <!-- CLOSET -->
+  <section class="panel active" id="closet">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <div><h3>我的衣櫃</h3><p class="sub" id="closetCount"></p></div>
+      <button class="btn" onclick="openAdd()">+ 加一件</button>
+    </div>
+    <div id="catbar" class="catbar"></div>
+    <div id="closetGrid"></div>
+  </section>
+
+  <!-- STYLIST -->
+  <section class="panel" id="stylist">
+    <div class="card" id="weatherCard" style="margin-bottom:14px">
+      <h3 id="wxTitle">🌤️ 今天的天氣</h3>
+      <p class="sub" id="wxInfo">查一下天氣,AI 會依氣溫自動挑對厚度的衣服</p>
+      <div class="row">
+        <input id="wxCity" placeholder="城市(建議英文,如 Newark、Taipei)" style="flex:1;min-width:150px">
+        <button class="btn ghost sm" onclick="weatherByCity()">查天氣</button>
+        <button class="btn ghost sm" onclick="weatherByGeo()">📍 用我的位置</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>今天想穿去哪?</h3>
+      <p class="sub">AI 會從你<b>已經有的衣服</b>裡挑一套</p>
+      <div class="row">
+        <div class="field"><label>場合</label>
+          <select id="occ" style="width:100%">
+            <option value="casual">日常休閒</option>
+            <option value="work">上班 / 實習</option>
+            <option value="interview">面試</option>
+            <option value="date">約會</option>
+            <option value="formal">正式場合</option>
+          </select>
+        </div>
+        <div class="field"><label>季節</label>
+          <select id="sea" style="width:100%">
+            <option value="spring">春</option>
+            <option value="summer">夏</option>
+            <option value="fall">秋</option>
+            <option value="winter">冬</option>
+          </select>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end">
+          <button class="btn" style="width:100%" onclick="style_me()">幫我配一套</button>
+        </div>
+      </div>
+    </div>
+    <div id="lookOut"></div>
+  </section>
+
+  <!-- PERSONAL COLOR -->
+  <section class="panel" id="color">
+    <div class="card" id="quizCard">
+      <h3>個人色彩小測驗 🎨</h3>
+      <p class="sub">30 秒找出你的色彩季型,讓 AI 搭配與數據洞察更懂你的膚色<br>(好玩 + 個人化取向,不是專業診斷)</p>
+      <div id="quizBody"></div>
+      <button class="btn" style="width:100%;margin-top:10px" onclick="computeColor()">看我的色彩季型 →</button>
+      <div class="hint" id="quizHint"></div>
+    </div>
+    <div id="colorResult"></div>
+  </section>
+
+  <!-- WISHLIST -->
+  <section class="panel" id="wish">
+    <div class="card">
+      <h3>想買清單 · 先問划不划算 🛒</h3>
+      <p class="sub">下手前先看看:這件能跟你<b>現有的衣服</b>配出幾套?避免買了沒得穿。</p>
+      <div class="row"><div class="field" style="min-width:100%">
+        <label>商品照片(自動辨識顏色與類型 ✨)</label>
+        <div class="row">
+          <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('w_cam').click()">📷 拍照</button>
+          <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('w_album').click()">🖼️ 上傳截圖</button>
+        </div>
+        <input type="file" id="w_cam" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="w_album" accept="image/*" style="display:none">
+        <div class="row" style="margin-top:8px">
+          <input id="w_url" placeholder="或貼圖片網址(長按商品圖→複製圖片網址)" style="flex:1">
+          <button type="button" class="btn ghost sm" onclick="loadWishUrl()">讀取</button>
+        </div>
+        <div id="wPreview" style="display:none;margin-top:10px;text-align:center"><img id="wPreviewImg" style="max-height:140px;border-radius:10px"></div>
+        <div class="hint" id="wDetectStatus">拍照、上傳商品截圖,或貼圖片網址,系統會自動填好下面的欄位;也可以手動選。</div>
+      </div></div>
+      <div class="row"><div class="field" style="min-width:100%">
+        <label>想買的東西</label><input id="w_name" placeholder="例:焦糖色針織上衣" style="width:100%"></div></div>
+      <div class="row">
+        <div class="field"><label>類型</label>
+          <select id="w_cat" style="width:100%">
+            <option value="top">上衣</option><option value="bottom">下身</option>
+            <option value="dress">洋裝</option><option value="outerwear">外套</option>
+            <option value="shoes">鞋</option><option value="bag">包</option><option value="accessory">配件</option>
+          </select></div>
+        <div class="field"><label>顏色</label>
+          <select id="w_color" style="width:100%">
+            <option>米色</option><option>白</option><option>黑</option><option>灰</option>
+            <option>藍</option><option>棕</option><option>粉</option><option>綠</option><option>紅</option><option>其他</option>
+          </select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>季節</label>
+          <select id="w_season" style="width:100%">
+            <option value="all">四季</option><option value="spring">春</option><option value="summer">夏</option>
+            <option value="fall">秋</option><option value="winter">冬</option>
+          </select></div>
+        <div class="field"><label>正式度</label>
+          <select id="w_formal" style="width:100%">
+            <option value="casual">休閒</option><option value="smart">半正式</option><option value="formal">正式</option>
+          </select></div>
+      </div>
+      <button class="btn" style="width:100%;margin-top:6px" onclick="checkWish()">幫我評估,加入清單 →</button>
+    </div>
+    <div id="wishResult"></div>
+    <div class="card" id="wishListCard" style="margin-top:16px;display:none">
+      <h3>我的想買清單</h3>
+      <div id="wishList"></div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="panel" id="insights">
+    <div class="card">
+      <h3>衣櫃健檢</h3>
+      <p class="sub">這就是別人沒有、你的 BAIT 數據底子能做的差異化</p>
+      <div id="statBlock"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>風格組成</h3>
+      <div id="breakdown" style="margin-top:8px"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>給你的洞察</h3>
+      <div id="insightList"></div>
+    </div>
+  </section>
+</main>
+
+<!-- ADD DIALOG -->
+<dialog id="addDlg">
+  <button class="x" onclick="addDlg.close()">×</button>
+  <div class="dlg">
+    <h3>加一件衣服</h3>
+    <div class="row"><div class="field" style="min-width:100%">
+      <label>照片(自動幫你辨識顏色與類型 ✨)</label>
+      <div class="row">
+        <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('f_cam').click()">📷 拍照</button>
+        <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('f_album').click()">🖼️ 從相簿選</button>
+      </div>
+      <input type="file" id="f_cam" accept="image/*" capture="environment" style="display:none">
+      <input type="file" id="f_album" accept="image/*" style="display:none">
+      <div id="preview" style="display:none;margin-top:10px;text-align:center"><img id="previewImg" style="max-height:140px;border-radius:10px"></div>
+      <label class="chkline"><input type="checkbox" id="f_bg" checked> ✂️ 自動去背</label>
+      <div class="hint" id="detectStatus">小提醒:衣服<b>平鋪</b>或<b>掛起來拍</b>(別穿在身上),去背最乾淨。沒照片也可以,會用顏色+emoji 代替。</div>
+      <button type="button" class="pref-link" id="addBackBtn" onclick="toggleBack()" style="padding:0;margin-top:10px">＋ 加背面 / 細節照(選填)</button>
+      <div id="backRow" style="display:none;margin-top:8px">
+        <div class="row">
+          <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('b_cam').click()">📷 拍背面</button>
+          <button type="button" class="btn ghost sm" style="flex:1" onclick="document.getElementById('b_album').click()">🖼️ 選背面</button>
+        </div>
+        <input type="file" id="b_cam" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="b_album" accept="image/*" style="display:none">
+        <div id="backPreview" style="display:none;margin-top:8px;text-align:center"><img id="backPreviewImg" style="max-height:110px;border-radius:8px"></div>
+      </div>
+    </div></div>
+    <div class="row"><div class="field" style="min-width:100%">
+      <label>名稱</label><input id="f_name" placeholder="例:米色針織上衣" style="width:100%"></div></div>
+    <div class="row">
+      <div class="field"><label>類型</label>
+        <select id="f_cat" style="width:100%">
+          <option value="top">上衣</option><option value="bottom">下身</option>
+          <option value="dress">洋裝</option><option value="outerwear">外套</option>
+          <option value="shoes">鞋</option><option value="bag">包</option><option value="accessory">配件</option>
+        </select></div>
+      <div class="field"><label>顏色</label>
+        <select id="f_color" style="width:100%">
+          <option>米色</option><option>白</option><option>黑</option><option>灰</option>
+          <option>藍</option><option>棕</option><option>粉</option><option>綠</option><option>紅</option><option>其他</option>
+        </select></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>季節</label>
+        <select id="f_season" style="width:100%">
+          <option value="all">四季</option><option value="spring">春</option><option value="summer">夏</option>
+          <option value="fall">秋</option><option value="winter">冬</option>
+        </select></div>
+      <div class="field"><label>正式度</label>
+        <select id="f_formal" style="width:100%">
+          <option value="casual">休閒</option><option value="smart">半正式</option><option value="formal">正式</option>
+        </select></div>
+    </div>
+    <div class="row" id="priceRow"><div class="field" style="min-width:100%">
+      <label>價格(算 cost-per-wear 用,可略過)</label>
+      <input id="f_price" type="number" placeholder="例:1200" style="width:100%"></div></div>
+    <button class="btn" style="width:100%;margin-top:6px" onclick="saveItem()">存進衣櫃</button>
+  </div>
+</dialog>
+
+<script>
+const CATS={top:"上衣",bottom:"下身",dress:"洋裝",outerwear:"外套",shoes:"鞋",bag:"包",accessory:"配件"};
+const EMO={top:"👚",bottom:"👖",dress:"👗",outerwear:"🧥",shoes:"👟",bag:"👜",accessory:"💍"};
+const COLORHEX={"米色":"#e8d8c3","白":"#f5f2ee","黑":"#3a3531","灰":"#b9b2ab","藍":"#9fb6cc","棕":"#b08c6a","粉":"#e8c4cc","綠":"#a7bda0","紅":"#cc8a8a","其他":"#d8cdc4"};
+const SEASON={spring:"春",summer:"夏",fall:"秋",winter:"冬",all:"四季"};
+// occasion -> acceptable formality levels
+const OCC_FORMAL={casual:["casual","smart"],work:["smart","formal"],interview:["smart","formal"],date:["casual","smart"],formal:["formal","smart"]};
+
+let DB=load();
+if(DB.length===0){DB=seed();save();}
+
+function load(){try{return JSON.parse(localStorage.getItem("stylewise")||"[]")}catch(e){return[]}}
+function save(){localStorage.setItem("stylewise",JSON.stringify(DB))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+function seed(){
+  const mk=(name,cat,color,season,formal,price,wears)=>({id:uid(),name,cat,color,season,formal,price:price,wears:wears,photo:""});
+  return [
+    mk("白棉T","top","白","all","casual",390,22),
+    mk("米色針織上衣","top","米色","fall","smart",1200,9),
+    mk("黑色襯衫","top","黑","all","formal",1500,3),
+    mk("牛仔褲","bottom","藍","all","casual",1800,30),
+    mk("黑西裝褲","bottom","黑","all","formal",2200,2),
+    mk("卡其寬褲","bottom","米色","spring","smart",1300,7),
+    mk("黑色洋裝","dress","黑","all","formal",2800,1),
+    mk("駝色大衣","outerwear","棕","winter","smart",4500,11),
+    mk("丹寧外套","outerwear","藍","spring","casual",1900,5),
+    mk("白球鞋","shoes","白","all","casual",2400,40),
+    mk("黑樂福鞋","shoes","黑","all","smart",2600,4),
+    mk("米色托特包","bag","米色","all","smart",1600,18),
+  ];
+}
+
+/* ---------- NAV ---------- */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.getElementById(b.dataset.tab).classList.add("active");
+  if(b.dataset.tab==="insights")renderInsights();
+  if(b.dataset.tab==="color"){if(suitedColors())renderColorResult();}
+  if(b.dataset.tab==="wish")renderWishlist();
+});
+
+/* ---------- CLOSET ---------- */
+function thumbHTML(it){
+  if(it.photo){
+    const flip=it.back?`<button class="flip" title="看背面/正面" onclick="flipImg(event,'${it.id}')">⇄</button>`:"";
+    return `<div class="thumb${it.cut?' cut':''}"><img src="${it.photo}" data-showing="front">${flip}</div>`;
+  }
+  return `<div class="thumb" style="background:${COLORHEX[it.color]||'#eee'}">${EMO[it.cat]}</div>`;
+}
+function flipImg(e,id){e.stopPropagation();const it=DB.find(x=>x.id===id);if(!it||!it.back)return;
+  const img=e.target.parentElement.querySelector("img");
+  const back=img.dataset.showing==="back";
+  img.src=back?it.photo:it.back;img.dataset.showing=back?"front":"back";}
+let CATFILTER="all";
+const CAT_ORDER=["top","bottom","dress","outerwear","shoes","bag","accessory"];
+const CAT_EN={top:"Tops",bottom:"Bottoms",dress:"Dresses",outerwear:"Outerwear",shoes:"Shoes",bag:"Bags",accessory:"Accessories"};
+function setCat(c){CATFILTER=c;renderCloset();}
+function recat(id,cat){const it=DB.find(x=>x.id===id);if(it){it.cat=cat;save();renderCloset();}}
+function itemCard(it){
+  const opts=CAT_ORDER.map(c=>`<option value="${c}"${c===it.cat?" selected":""}>${CATS[c]}</option>`).join("");
+  return `<div class="item">
+      ${thumbHTML(it)}
+      <div class="body">
+        <div class="nm">${it.name}</div>
+        <div class="meta">${it.color} · ${SEASON[it.season]} · 穿過 ${it.wears} 次</div>
+        <select class="recat" onchange="recat('${it.id}',this.value)" title="改分類">${opts}</select>
+        <div class="acts">
+          <button onclick="wear('${it.id}')">穿過一次</button>
+          <button onclick="del('${it.id}')">刪除</button>
+        </div>
+      </div>
+    </div>`;
+}
+function gridHTML(items){return `<div class="grid">${items.map(itemCard).join("")}</div>`;}
+function renderCloset(){
+  const g=document.getElementById("closetGrid"),bar=document.getElementById("catbar");
+  document.getElementById("closetCount").textContent=`${DB.length} 件衣服 · 點「穿過一次」幫你累積數據`;
+  const counts={};DB.forEach(it=>counts[it.cat]=(counts[it.cat]||0)+1);
+  if(bar){
+    const chips=[`<div class="catchip${CATFILTER==="all"?" on":""}" onclick="setCat('all')">全部<small>${DB.length}</small></div>`]
+      .concat(CAT_ORDER.filter(c=>counts[c]).map(c=>
+        `<div class="catchip${CATFILTER===c?" on":""}" onclick="setCat('${c}')">${CATS[c]}<small>${counts[c]}</small></div>`));
+    bar.innerHTML=chips.join("");
+  }
+  if(DB.length===0){g.innerHTML=`<div class="empty">衣櫃是空的,點右上角加第一件 👗</div>`;return;}
+  if(CATFILTER==="all"){
+    g.innerHTML=CAT_ORDER.filter(c=>counts[c]).map(c=>{
+      const items=DB.filter(it=>it.cat===c);
+      return `<div class="zone">
+        <div class="zone-h"><span class="t">${CATS[c]}</span><span class="en">${CAT_EN[c]}</span><span class="n">${items.length} 件</span></div>
+        ${gridHTML(items)}
+      </div>`;
+    }).join("");
+  }else{
+    const items=DB.filter(it=>it.cat===CATFILTER);
+    g.innerHTML=items.length?gridHTML(items):`<div class="empty">這個分類還沒有單品</div>`;
+  }
+}
+function wear(id){const it=DB.find(x=>x.id===id);if(it){it.wears++;save();renderCloset();}}
+function del(id){DB=DB.filter(x=>x.id!==id);save();renderCloset();}
+
+/* ---------- ADD ---------- */
+const addDlg=document.getElementById("addDlg");
+let pickedDataUrl="",pickedBackDataUrl="",pickedSubtype="",frontCut=false;
+function tracksPrice(){return !!(PROFILE&&Array.isArray(PROFILE.trackPrice)&&PROFILE.trackPrice.includes("要,順便看花費分析"));}
+function fileToDataUrl(file){return new Promise(r=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(file);});}
+function openAdd(){
+  ["f_name","f_price"].forEach(i=>document.getElementById(i).value="");
+  ["f_cam","f_album","b_cam","b_album"].forEach(i=>document.getElementById(i).value="");
+  pickedDataUrl="";pickedBackDataUrl="";pickedSubtype="";frontCut=false;
+  document.getElementById("preview").style.display="none";
+  document.getElementById("backPreview").style.display="none";
+  document.getElementById("backRow").style.display="none";
+  document.getElementById("f_bg").checked=true;
+  document.getElementById("priceRow").style.display=tracksPrice()?"flex":"none";
+  document.getElementById("detectStatus").innerHTML="小提醒:衣服<b>平鋪</b>或<b>掛起來拍</b>(別穿在身上),去背最乾淨。沒照片也可以,會用顏色+emoji 代替。";
+  addDlg.showModal();
+}
+function toggleBack(){
+  const r=document.getElementById("backRow");
+  r.style.display=r.style.display==="none"?"block":"none";
+}
+// remove background if toggle on; falls back to original on any failure
+async function maybeRemoveBg(dataUrl,statusEl){
+  if(!document.getElementById("f_bg").checked||!window.SW_removeBg) return {url:dataUrl,cut:false};
+  if(statusEl) statusEl.textContent="✂️ 去背中…(第一次需載入模型,約 10–20 秒)";
+  try{const out=await window.SW_removeBg(dataUrl);return {url:out,cut:true};}
+  catch(e){if(statusEl) statusEl.textContent="去背沒成功,先用原圖(可繼續辨識)";return {url:dataUrl,cut:false};}
+}
+async function onPick(e){
+  const file=e.target.files[0];if(!file)return;
+  const status=document.getElementById("detectStatus");
+  const original=await fileToDataUrl(file);
+  document.getElementById("previewImg").src=original;
+  document.getElementById("preview").style.display="block";
+  const {url,cut}=await maybeRemoveBg(original,status);
+  pickedDataUrl=url;frontCut=cut;
+  document.getElementById("previewImg").src=url;
+  autoDetect(url);
+}
+async function onPickBack(e){
+  const file=e.target.files[0];if(!file)return;
+  const original=await fileToDataUrl(file);
+  document.getElementById("backPreviewImg").src=original;
+  document.getElementById("backPreview").style.display="block";
+  const {url}=await maybeRemoveBg(original,null);
+  pickedBackDataUrl=url;
+  document.getElementById("backPreviewImg").src=url;
+}
+document.getElementById("f_cam").addEventListener("change",onPick);
+document.getElementById("f_album").addEventListener("change",onPick);
+document.getElementById("b_cam").addEventListener("change",onPickBack);
+document.getElementById("b_album").addEventListener("change",onPickBack);
+function saveItem(){
+  const name=document.getElementById("f_name").value.trim()||CATS[document.getElementById("f_cat").value];
+  const item={id:uid(),name,cat:f_cat.value,color:f_color.value,season:f_season.value,formal:f_formal.value,
+    price:Number(f_price.value)||0,wears:0,photo:pickedDataUrl||"",back:pickedBackDataUrl||"",
+    cut:frontCut,sub:pickedSubtype||""};
+  DB.push(item);save();renderCloset();addDlg.close();
+}
+
+/* ---------- PROFILE / ONBOARDING ---------- */
+function loadProfile(){try{return JSON.parse(localStorage.getItem("stylewise_profile")||"null")}catch(e){return null}}
+let PROFILE=loadProfile();
+// chip toggling
+document.querySelectorAll(".chips .chip").forEach(chip=>{
+  chip.onclick=()=>{
+    const box=chip.parentElement;
+    if(box.dataset.single){box.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));chip.classList.add("on");}
+    else chip.classList.toggle("on");
+  };
+});
+function readChips(group){return[...document.querySelectorAll(`.chips[data-group="${group}"] .chip.on`)].map(c=>c.textContent);}
+function fillChips(p){
+  if(!p)return;
+  document.querySelectorAll(".chips").forEach(box=>{
+    const g=box.dataset.group, vals=p[g]||[];
+    box.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",vals.includes(c.textContent)));
+  });
+}
+function openOnboard(){fillChips(PROFILE);document.getElementById("onboard").classList.add("show");}
+function saveProfile(skip){
+  if(!skip){
+    PROFILE={age:readChips("age"),gender:readChips("gender"),occasions:readChips("occasions"),brands:readChips("brands")};
+    localStorage.setItem("stylewise_profile",JSON.stringify(PROFILE));
+  }else if(!PROFILE){localStorage.setItem("stylewise_profile",JSON.stringify({skipped:true}));PROFILE={skipped:true};}
+  document.getElementById("onboard").classList.remove("show");
+  applyProfile();
+}
+function applyProfile(){
+  // use primary occasion as the stylist's default pick
+  const map={"上學 / 上班":"work","面試":"interview","約會":"date","日常休閒":"casual","正式場合":"formal","運動":"casual"};
+  if(PROFILE&&PROFILE.occasions&&PROFILE.occasions.length){
+    const v=map[PROFILE.occasions[0]];if(v)document.getElementById("occ").value=v;
+  }
+  const tag=document.getElementById("welcomeTag");
+  if(PROFILE&&PROFILE.brands&&PROFILE.brands.length){
+    tag.innerHTML=`嗨!已記住你常穿 ${PROFILE.brands.slice(0,3).join("、")} · 場合偏好也存好了 · <button class="pref-link" onclick="openOnboard()">編輯偏好</button>`;
+  }
+}
+
+/* ---------- AUTO-DETECT ---------- */
+const PALETTE={"米色":[230,215,180],"白":[244,242,238],"黑":[45,42,38],"灰":[150,144,138],
+  "藍":[95,125,170],"棕":[140,95,60],"粉":[230,175,188],"綠":[110,150,105],"紅":[190,75,75]};
+function nearestColor(r,g,b){
+  let best="其他",bd=1e9;
+  for(const k in PALETTE){const[pr,pg,pb]=PALETTE[k];const d=(r-pr)**2+(g-pg)**2+(b-pb)**2;if(d<bd){bd=d;best=k;}}
+  return best;
+}
+function detectColor(dataUrl){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const c=document.createElement("canvas"),s=48;c.width=s;c.height=s;
+      const ctx=c.getContext("2d");ctx.drawImage(img,0,0,s,s);
+      const d=ctx.getImageData(0,0,s,s).data;
+      // sample center 60% to bias toward garment, skip transparent/near-white edges
+      let r=0,g=0,b=0,n=0;
+      for(let y=Math.floor(s*0.2);y<s*0.8;y++)for(let x=Math.floor(s*0.2);x<s*0.8;x++){
+        const i=(y*s+x)*4;if(d[i+3]<128)continue;r+=d[i];g+=d[i+1];b+=d[i+2];n++;
+      }
+      if(!n){res("其他");return;}
+      res(nearestColor(r/n,g/n,b/n));
+    };
+    img.onerror=()=>res("其他");
+    img.src=dataUrl;
+  });
+}
+const CAT_DEFAULTS={top:{season:"all",formal:"casual"},bottom:{season:"all",formal:"casual"},
+  dress:{season:"all",formal:"smart"},outerwear:{season:"winter",formal:"smart"},
+  shoes:{season:"all",formal:"smart"},bag:{season:"all",formal:"smart"},accessory:{season:"all",formal:"casual"}};
+async function autoDetect(dataUrl){
+  const status=document.getElementById("detectStatus");
+  // 1) color — instant
+  status.textContent="🎨 偵測顏色中…";
+  const color=await detectColor(dataUrl);
+  document.getElementById("f_color").value=Object.keys(PALETTE).includes(color)?color:"其他";
+  status.textContent=`🎨 顏色:${color} ✓ ｜🤖 辨識類型中…(第一次需載入模型,請稍候)`;
+  // 2) category + subtype — local AI model (free)
+  try{
+    const cat=await window.SW_classify(dataUrl);
+    if(cat){
+      document.getElementById("f_cat").value=cat;
+      const def=CAT_DEFAULTS[cat];
+      document.getElementById("f_season").value=def.season;
+      document.getElementById("f_formal").value=def.formal;
+      // subtype (e.g. 寬褲 / 西裝外套) — best effort
+      let sub="";
+      try{ sub=await window.SW_subtype(dataUrl,cat)||""; }catch(e){}
+      pickedSubtype=sub;
+      // auto-name only if user hasn't typed one
+      const nameEl=document.getElementById("f_name");
+      if(!nameEl.value.trim()){
+        nameEl.value=(color&&color!=="其他"?color+" ":"")+(sub||CATS[cat]);
+      }
+      status.textContent=`✨ 已辨識:${color} ${sub||CATS[cat]} — 名稱可自行修改,確認後即可存`;
+    }else{
+      status.textContent=`🎨 顏色:${color} ✓ ｜類型沒猜準,手動選一下類型就好`;
+    }
+  }catch(e){
+    status.textContent=`🎨 顏色:${color} ✓ ｜(類型辨識需要連網,手動選類型即可)`;
+  }
+}
+
+/* ---------- PERSONAL COLOR QUIZ ---------- */
+const QUIZ=[
+  {q:"手腕內側的血管看起來偏哪種顏色?",a:[["偏綠","warm"],["偏藍 / 紫","cool"],["看不太出來","neutral"]]},
+  {q:"戴哪種金屬飾品時氣色比較好?",a:[["金色","warm"],["銀色","cool"],["都不錯","neutral"]]},
+  {q:"曬太陽之後,你的皮膚通常會?",a:[["變古銅 / 曬黑","warm"],["先變紅 / 容易脫皮","cool"]]},
+  {q:"你自然的髮色比較接近?",a:[["帶暖的棕色","warm"],["帶冷調的黑色","cool"]]},
+  {q:"穿哪一組顏色別人常說你氣色好?",a:[["大地色、珊瑚橘、暖黃","warm"],["寶藍、正紅、莓紫","cool"]]},
+  {q:"哪種顏色感覺更襯你?",a:[["鮮豔、明亮、對比強","bright"],["柔和、低飽和、霧霧的","muted"]]},
+];
+const RESULTS={
+  "春":{name:"暖亮 · 春型 (Spring)",sub:"適合明亮溫暖、像陽光一樣的顏色,黑色和灰會壓住你的氣色。",
+    palette:[["珊瑚橘","#FF8C69"],["暖黃","#FFD27F"],["嫩綠","#A5D86E"],["蜜桃","#FFB7A0"],["米白","#FFF4E0"],["暖棕","#C68642"]],
+    appColors:["米色","白","棕","綠","紅","粉"]},
+  "秋":{name:"暖柔 · 秋型 (Autumn)",sub:"適合大地色系、低調而溫暖的顏色,正黑與冷色調會顯得突兀。",
+    palette:[["焦糖","#B5651D"],["橄欖綠","#6B7C3A"],["磚紅","#A8412B"],["芥末黃","#D4A017"],["駝色","#C19A6B"],["深棕","#5C4033"]],
+    appColors:["米色","棕","綠","紅"]},
+  "夏":{name:"冷柔 · 夏型 (Summer)",sub:"適合柔和的冷色與粉霧色,純黑與太鮮豔的顏色會比較搶。",
+    palette:[["莓粉","#D99BB0"],["霧藍","#9DB4CE"],["薰衣草","#B7A6D6"],["灰玫瑰","#C4A0A0"],["薄荷","#A8D5C2"],["灰白","#EDEDED"]],
+    appColors:["白","灰","藍","粉"]},
+  "冬":{name:"冷亮 · 冬型 (Winter)",sub:"適合高對比、乾淨俐落的冷色,大地色與暖棕會讓你顯得疲憊。",
+    palette:[["正紅","#C8102E"],["寶藍","#0047AB"],["莓紫","#8E2C5E"],["純白","#FFFFFF"],["純黑","#1A1A1A"],["翡翠綠","#009B77"]],
+    appColors:["黑","白","藍","紅","粉","灰"]},
+};
+function renderQuiz(){
+  const body=document.getElementById("quizBody");
+  body.innerHTML=QUIZ.map((item,i)=>`
+    <div class="ob-q" style="font-size:14px;margin-top:18px">${i+1}. ${item.q}</div>
+    <div class="chips" data-qi="${i}" data-single="1">
+      ${item.a.map(o=>`<span class="chip" data-val="${o[1]}">${o[0]}</span>`).join("")}
+    </div>`).join("");
+  body.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    const box=c.parentElement;box.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");
+  });
+}
+function computeColor(){
+  const picks=[];
+  for(let i=0;i<QUIZ.length;i++){const on=document.querySelector(`.chips[data-qi="${i}"] .chip.on`);picks.push(on?on.dataset.val:null);}
+  if(picks.includes(null)){document.getElementById("quizHint").textContent="還有題目沒選喔,全部選完才算得準 🙂";return;}
+  document.getElementById("quizHint").textContent="";
+  let warm=0,cool=0,bright=0,muted=0;
+  picks.forEach(v=>{if(v==="warm")warm++;else if(v==="cool")cool++;else if(v==="bright")bright++;else if(v==="muted")muted++;});
+  const isWarm=warm>=cool, isBright=bright>=muted;
+  const season=isWarm?(isBright?"春":"秋"):(isBright?"冬":"夏");
+  PROFILE=PROFILE||{};
+  PROFILE.personalColor={season,undertone:isWarm?"暖":"冷",clarity:isBright?"亮":"柔",appColors:RESULTS[season].appColors};
+  localStorage.setItem("stylewise_profile",JSON.stringify(PROFILE));
+  renderColorResult();
+}
+function renderColorResult(){
+  const pc=PROFILE&&PROFILE.personalColor;const out=document.getElementById("colorResult");
+  if(!pc){out.innerHTML="";return;}
+  const r=RESULTS[pc.season];
+  out.innerHTML=`<div class="card" style="margin-top:16px">
+    <span class="season-badge">你的色彩季型:${r.name}</span>
+    <p class="sub" style="margin-top:12px">${r.sub}</p>
+    <h3 style="margin-top:10px">適合你的顏色</h3>
+    <div class="swatches">${r.palette.map(p=>`<div class="sw"><i style="background:${p[1]}"></i>${p[0]}</div>`).join("")}</div>
+    <div class="insight" style="margin-top:16px">✨ 已套用!<b>AI 搭配</b>會優先挑這些色調的衣服,<b>數據洞察</b>也會告訴你衣櫃有多少比例適合你。</div>
+    <div class="row" style="margin-top:14px"><button class="btn ghost sm" onclick="retakeQuiz()">重新測驗</button></div>
+  </div>`;
+}
+function retakeQuiz(){if(PROFILE)delete PROFILE.personalColor;localStorage.setItem("stylewise_profile",JSON.stringify(PROFILE||{}));document.getElementById("colorResult").innerHTML="";renderQuiz();}
+function suitedColors(){return (PROFILE&&PROFILE.personalColor&&PROFILE.personalColor.appColors)||null;}
+
+/* ---------- STYLIST ---------- */
+function pick(cat,season,formals){
+  const pool=DB.filter(it=>it.cat===cat && (it.season===season||it.season==="all") && formals.includes(it.formal));
+  if(pool.length===0)return null;
+  // prefer colors that suit the user's personal-color season, if known
+  const suited=suitedColors();
+  if(suited){const good=pool.filter(it=>suited.includes(it.color));if(good.length)return good[Math.floor(Math.random()*good.length)];}
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function style_me(){
+  const occ=document.getElementById("occ").value, season=document.getElementById("sea").value;
+  const formals=OCC_FORMAL[occ];
+  let picks=[], missing=[];
+  const dress=pick("dress",season,formals);
+  const useDress = dress && Math.random()<0.4;
+  if(useDress){picks.push(dress);}
+  else{
+    const top=pick("top",season,formals), bottom=pick("bottom",season,formals);
+    if(top)picks.push(top);else missing.push("上衣");
+    if(bottom)picks.push(bottom);else missing.push("下身");
+  }
+  const shoes=pick("shoes",season,formals); if(shoes)picks.push(shoes);else missing.push("鞋");
+  const wantOuter = WX ? WX.temp<18 : (season==="winter"||season==="fall");
+  if(wantOuter){const out=pick("outerwear",season,formals);if(out)picks.push(out);else missing.push("外套");}
+  const bag=pick("bag",season,formals); if(bag)picks.push(bag);
+
+  const out=document.getElementById("lookOut");
+  if(picks.length===0){out.innerHTML=`<div class="empty">這個場合/季節還沒有適合的衣服,先去衣櫃加幾件 👗</div>`;return;}
+  const occName={casual:"日常",work:"上班",interview:"面試",date:"約會",formal:"正式"}[occ];
+  let html=`<div class="card" style="margin-top:16px"><h3>為你配的「${occName} · ${SEASON[season]}」造型</h3>`;
+  html+=`<div class="look">`+picks.map(it=>`
+    <div class="item">${thumbHTML(it)}<div class="body"><div class="nm">${it.name}</div>
+    <div class="meta">${CATS[it.cat]} · ${it.color}</div></div></div>`).join("")+`</div>`;
+  if(missing.length)html+=`<div class="insight">⚠️ 這套缺 <b>${missing.join("、")}</b> — 可能是補貨的訊號,或換個場合試試。</div>`;
+  html+=`<div class="caption"><div class="lbl">一鍵 OOTD 文案</div>${caption(picks,occName,season)}</div>`;
+  html+=`<div class="row" style="margin-top:14px"><button class="btn ghost sm" onclick="style_me()">換一套</button></div></div>`;
+  out.innerHTML=html;
+}
+function caption(picks,occName,season){
+  const colors=[...new Set(picks.map(p=>p.color))].slice(0,3).join("・");
+  const tags=`#OOTD #${occName}穿搭 #${SEASON[season]}日 #留學生穿搭 #平價時尚`;
+  const lines=[
+    `今天的 ${occName} look:以 ${colors} 為主調,${picks.map(p=>p.name).slice(0,3).join("、")} 的組合,簡單但很有自己。`,
+    `${SEASON[season]}天就想這樣穿 — ${picks[0].name}配上${picks[1]?picks[1].name:"基本款"},舒服又得體。`,
+    `衣櫃裡的老朋友重新搭一套,證明會穿比多買更重要 ✨`
+  ];
+  return lines[Math.floor(Math.random()*lines.length)]+`<br><br><span style="color:var(--accent)">${tags}</span>`;
+}
+
+/* ---------- INSIGHTS ---------- */
+function renderInsights(){
+  const n=DB.length;
+  const totalWears=DB.reduce((s,i)=>s+i.wears,0);
+  const showMoney=tracksPrice();
+  const mostWorn=[...DB].sort((a,b)=>b.wears-a.wears)[0];
+  const leastWorn=[...DB].sort((a,b)=>a.wears-b.wears)[0];
+  const zombies=DB.filter(i=>i.wears<=1);
+  let stats=`
+    <div class="stat"><span>總件數</span><span class="v">${n} 件</span></div>
+    <div class="stat"><span>累積穿著次數</span><span class="v">${totalWears} 次</span></div>
+    <div class="stat"><span>最常穿單品</span><span class="v">${mostWorn?mostWorn.name+" · "+mostWorn.wears+"次":"—"}</span></div>
+    <div class="stat"><span>最少穿單品</span><span class="v">${leastWorn?leastWorn.name+" · "+leastWorn.wears+"次":"—"}</span></div>`;
+  let cpw=[];
+  if(showMoney){
+    const totalVal=DB.reduce((s,i)=>s+i.price,0);
+    cpw=DB.filter(i=>i.price>0&&i.wears>0).map(i=>({name:i.name,v:i.price/i.wears})).sort((a,b)=>a.v-b.v);
+    stats=`<div class="stat"><span>總件數</span><span class="v">${n} 件</span></div>
+    <div class="stat"><span>衣櫃總值</span><span class="v">$${totalVal.toLocaleString()}</span></div>
+    <div class="stat"><span>累積穿著次數</span><span class="v">${totalWears} 次</span></div>
+    <div class="stat"><span>最划算單品(每次穿成本)</span><span class="v">${cpw[0]?cpw[0].name+" · $"+cpw[0].v.toFixed(0):"—"}</span></div>
+    <div class="stat"><span>最不划算單品</span><span class="v">${cpw.length?cpw[cpw.length-1].name+" · $"+cpw[cpw.length-1].v.toFixed(0):"—"}</span></div>`;
+  }
+  document.getElementById("statBlock").innerHTML=stats
+    +(showMoney?"":`<div class="hint" style="margin-top:10px">想看 CP 值 / 花費分析?到上方「編輯偏好」開啟價格紀錄即可。</div>`);
+
+  // breakdown by category
+  const byCat={};DB.forEach(i=>byCat[i.cat]=(byCat[i.cat]||0)+1);
+  const bd=document.getElementById("breakdown");
+  bd.innerHTML=Object.keys(CATS).filter(c=>byCat[c]).map(c=>{
+    const pct=Math.round(byCat[c]/n*100);
+    return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px">
+      <span>${EMO[c]} ${CATS[c]}</span><span style="color:var(--muted)">${byCat[c]} 件 · ${pct}%</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  }).join("");
+
+  // insights
+  const ins=document.getElementById("insightList");
+  let msgs=[];
+  if(zombies.length)msgs.push(`你有 <b>${zombies.length} 件「殭屍衣服」</b>(幾乎沒穿過):${zombies.slice(0,3).map(z=>z.name).join("、")}${zombies.length>3?"…":""}。穿搭時優先翻它們出來,別讓錢躺著。`);
+  const formalCount=DB.filter(i=>i.formal==="formal").length;
+  const formalPct=Math.round(formalCount/n*100);
+  if(formalPct<20)msgs.push(`正式單品只佔 <b>${formalPct}%</b>。如果近期有面試,這塊偏薄,值得補一件能打的外套或鞋。`);
+  const casualPct=Math.round(DB.filter(i=>i.formal==="casual").length/n*100);
+  if(casualPct>55)msgs.push(`你的衣櫃 <b>${casualPct}%</b> 是休閒款 — 風格很一致,但上班/正式場合的選擇會比較少。`);
+  const cheap=cpw[0];
+  if(showMoney&&cheap)msgs.push(`<b>${cheap.name}</b> 是你的 CP 值之王,每次穿只花 $${cheap.v.toFixed(0)} — 這類「百搭主力」可以多投資。`);
+  const suited=suitedColors();
+  if(suited){
+    const match=DB.filter(i=>suited.includes(i.color)).length;
+    const mpct=Math.round(match/n*100);
+    const sName=RESULTS[PROFILE.personalColor.season].name;
+    if(mpct>=60)msgs.push(`你的衣櫃有 <b>${mpct}%</b> 落在適合你的色調(${sName})— 顏色選得很對,氣色加分。`);
+    else msgs.push(`只有 <b>${mpct}%</b> 的衣服是適合你色調(${sName})的顏色。下次購物往這些色挑,氣色會明顯更好。`);
+  }
+  if(!msgs.length)msgs.push("資料還不夠多,多按幾次「穿過一次」、補上價格,洞察會越來越準。");
+  ins.innerHTML=msgs.map(m=>`<div class="insight">💡 ${m}</div>`).join("");
+}
+
+/* ---------- WEATHER (Open-Meteo, free, no key) ---------- */
+let WX=null;
+const WX_CODE={0:["晴","☀️"],1:["大致晴朗","🌤️"],2:["多雲","⛅"],3:["陰","☁️"],
+  45:["起霧","🌫️"],48:["霧凇","🌫️"],51:["毛毛雨","🌦️"],53:["小雨","🌦️"],55:["雨","🌧️"],
+  61:["小雨","🌧️"],63:["中雨","🌧️"],65:["大雨","🌧️"],71:["小雪","🌨️"],73:["中雪","🌨️"],75:["大雪","❄️"],
+  80:["陣雨","🌦️"],81:["陣雨","🌧️"],82:["強陣雨","⛈️"],95:["雷雨","⛈️"],96:["雷雨","⛈️"],99:["強雷雨","⛈️"]};
+function wxDesc(code){return WX_CODE[code]||["",""];}
+async function fetchForecast(lat,lon,place){
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
+  const r=await fetch(u);const j=await r.json();
+  if(!j.current)throw new Error("no data");
+  setWeather(place,j.current.temperature_2m,j.current.weather_code);
+}
+function setWeather(place,temp,code){
+  WX={temp,code,place};
+  const season=temp<10?"winter":temp<18?"fall":temp<26?"spring":"summer";
+  document.getElementById("sea").value=season;
+  const[d,emo]=wxDesc(code);
+  document.getElementById("wxTitle").textContent=`${emo} ${place} 現在 ${Math.round(temp)}°C`;
+  document.getElementById("wxInfo").innerHTML=`${d} · 已依氣溫把季節設為「<b>${SEASON[season]}</b>」,「幫我配一套」會挑對厚度的衣服。`;
+}
+async function weatherByCity(){
+  const city=document.getElementById("wxCity").value.trim();
+  const info=document.getElementById("wxInfo");
+  if(!city){info.textContent="先輸入城市名稱(英文較準,如 Newark、Taipei)";return;}
+  info.textContent="查詢中…";
+  try{
+    const g=await(await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh`)).json();
+    if(!g.results||!g.results.length){info.textContent="找不到這個城市,換個拼法試試(建議用英文)";return;}
+    const r=g.results[0];
+    await fetchForecast(r.latitude,r.longitude,r.name||city);
+  }catch(e){info.textContent="查詢失敗,可能是網路問題,稍後再試。";}
+}
+function weatherByGeo(){
+  const info=document.getElementById("wxInfo");
+  if(!navigator.geolocation){info.textContent="這個瀏覽器不支援定位,請改用城市搜尋。";return;}
+  info.textContent="定位中…";
+  navigator.geolocation.getCurrentPosition(
+    p=>fetchForecast(p.coords.latitude,p.coords.longitude,"你的位置").catch(()=>info.textContent="取得天氣失敗,改用城市搜尋。"),
+    e=>{info.textContent="無法取得定位(可能被瀏覽器擋住),請改用城市搜尋。";}
+  );
+}
+
+/* ---------- WISHLIST + 能不能配 ---------- */
+let WISH=loadWish();
+function loadWish(){try{return JSON.parse(localStorage.getItem("stylewise_wish")||"[]")}catch(e){return[]}}
+function saveWish(){localStorage.setItem("stylewise_wish",JSON.stringify(WISH))}
+const FORMAL_ORDER={casual:0,smart:1,formal:2};
+function seasonOK(a,b){return a==="all"||b==="all"||a===b}
+function formalClose(a,b){return Math.abs(FORMAL_ORDER[a]-FORMAL_ORDER[b])<=1}
+function countOutfits(c){
+  const list=cat=>DB.filter(i=>i.cat===cat && seasonOK(i.season,c.season) && formalClose(i.formal,c.formal));
+  let count=0,sample=[c],missing=[];
+  if(c.cat==="top"){const b=list("bottom"),s=list("shoes");count=b.length*s.length;if(b[0])sample.push(b[0]);if(s[0])sample.push(s[0]);if(!b.length)missing.push("下身");if(!s.length)missing.push("鞋");}
+  else if(c.cat==="bottom"){const t=list("top"),s=list("shoes");count=t.length*s.length;if(t[0])sample.push(t[0]);if(s[0])sample.push(s[0]);if(!t.length)missing.push("上衣");if(!s.length)missing.push("鞋");}
+  else if(c.cat==="dress"){const s=list("shoes");count=s.length;if(s[0])sample.push(s[0]);if(!s.length)missing.push("鞋");}
+  else if(c.cat==="outerwear"){const t=list("top"),b=list("bottom");count=t.length*b.length;if(t[0])sample.push(t[0]);if(b[0])sample.push(b[0]);if(!t.length)missing.push("上衣");if(!b.length)missing.push("下身");}
+  else if(c.cat==="shoes"){const t=list("top"),b=list("bottom");count=t.length*b.length;if(t[0])sample.push(t[0]);if(b[0])sample.push(b[0]);if(!t.length||!b.length)missing.push("可搭的上衣 / 下身");}
+  else {count=Math.min(DB.length,8);} // bag/accessory 屬於百搭
+  return {count,sample,missing};
+}
+function verdictCard(c){
+  const{count,sample,missing}=countOutfits(c);
+  let v,vc;
+  if(count>=4){v="✅ 很好搭!";vc="var(--good)";}
+  else if(count>=1){v="🟡 還可以,選擇有限";vc="var(--warn)";}
+  else {v="⚠️ 配不太出來";vc="#c0635a";}
+  const suited=suitedColors();
+  let colorNote="";
+  if(suited){colorNote=suited.includes(c.color)
+    ?`<div class="insight" style="margin-top:10px">🎨 而且 <b>${c.color}</b> 符合你的色彩季型,氣色加分。</div>`
+    :`<div class="insight" style="margin-top:10px">🎨 提醒:<b>${c.color}</b> 不太符合你的色彩季型,可考慮挑更襯膚的顏色。</div>`;}
+  let body=`<div class="card" style="margin-top:16px">
+    <span class="season-badge" style="background:${vc}">${v} 能配出約 ${count} 套</span>
+    <p class="sub" style="margin-top:12px">${c.name}(${CATS[c.cat]}·${c.color})跟你現有衣服的搭配可能性</p>`;
+  if(sample.length>1){
+    body+=`<div class="look">`+sample.map((it,i)=>`<div class="item">${thumbHTML(it)}
+      <div class="body"><div class="nm">${it.name}${i===0?" 🛒":""}</div><div class="meta">${CATS[it.cat]} · ${it.color}</div></div></div>`).join("")+`</div>`;
+  }
+  if(missing.length)body+=`<div class="insight" style="margin-top:10px">⚠️ 你還缺<b>${missing.join("、")}</b>才配得起來 — 等於買它要連帶再添,先想清楚划不划算。</div>`;
+  body+=colorNote+`</div>`;
+  return body;
+}
+// ——— 想買頁:商品照片 / 網址 自動辨識(沿用衣櫃那套,免費免 key) ———
+let wishPickedDataUrl="";
+function showWishPreview(dataUrl){
+  wishPickedDataUrl=dataUrl;
+  document.getElementById("wPreview").style.display="block";
+  document.getElementById("wPreviewImg").src=dataUrl;
+}
+async function detectWishFromDataUrl(dataUrl){
+  const status=document.getElementById("wDetectStatus");
+  status.textContent="🎨 偵測顏色中…";
+  const color=await detectColor(dataUrl);
+  document.getElementById("w_color").value=Object.keys(PALETTE).includes(color)?color:"其他";
+  status.textContent=`🎨 顏色:${color} ✓ ｜🤖 辨識類型中…(第一次需載入模型,請稍候)`;
+  try{
+    const cat=await window.SW_classify(dataUrl);
+    if(cat){
+      document.getElementById("w_cat").value=cat;
+      const def=CAT_DEFAULTS[cat];
+      document.getElementById("w_season").value=def.season;
+      document.getElementById("w_formal").value=def.formal;
+      status.textContent=`✨ 已自動辨識:${CATS[cat]} · ${color} — 確認一下就按評估`;
+    }else status.textContent=`🎨 顏色:${color} ✓ ｜類型沒猜準,手動選一下類型就好`;
+  }catch(e){status.textContent=`🎨 顏色:${color} ✓ ｜(類型辨識需要連網,手動選類型即可)`;}
+}
+function onPickWishFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const fr=new FileReader();
+  fr.onload=ev=>{showWishPreview(ev.target.result);detectWishFromDataUrl(ev.target.result);};
+  fr.readAsDataURL(file);
+}
+function urlToDataUrl(url){
+  return new Promise(res=>{
+    const img=new Image();img.crossOrigin="anonymous";
+    img.onload=()=>{try{
+      const c=document.createElement("canvas");c.width=img.naturalWidth||300;c.height=img.naturalHeight||300;
+      c.getContext("2d").drawImage(img,0,0);res(c.toDataURL("image/png"));
+    }catch(e){res("")}};
+    img.onerror=()=>res("");
+    img.src=url;
+  });
+}
+async function loadWishUrl(){
+  const url=document.getElementById("w_url").value.trim();
+  if(!url)return;
+  const status=document.getElementById("wDetectStatus");
+  status.textContent="🌐 載入圖片中…";
+  const dataUrl=await urlToDataUrl(url);
+  if(!dataUrl){status.textContent="⚠️ 這個網址讀不到圖片(可能不是直接的圖片連結,或對方網站不允許)。最穩的方式是「截圖→上傳截圖」。";return;}
+  showWishPreview(dataUrl);
+  await detectWishFromDataUrl(dataUrl);
+}
+document.getElementById("w_cam").addEventListener("change",onPickWishFile);
+document.getElementById("w_album").addEventListener("change",onPickWishFile);
+
+function checkWish(){
+  const cat=document.getElementById("w_cat").value;
+  const c={id:uid(),name:document.getElementById("w_name").value.trim()||CATS[cat],cat,
+    color:document.getElementById("w_color").value,season:document.getElementById("w_season").value,
+    formal:document.getElementById("w_formal").value,photo:wishPickedDataUrl||""};
+  WISH.unshift(c);saveWish();
+  document.getElementById("wishResult").innerHTML=verdictCard(c);
+  renderWishlist();
+  // reset inputs for next item
+  document.getElementById("w_name").value="";
+  document.getElementById("w_url").value="";
+  wishPickedDataUrl="";
+  document.getElementById("wPreview").style.display="none";
+  document.getElementById("wDetectStatus").textContent="拍照、上傳商品截圖,或貼圖片網址,系統會自動填好下面的欄位;也可以手動選。";
+}
+function renderWishlist(){
+  const card=document.getElementById("wishListCard"),box=document.getElementById("wishList");
+  if(!WISH.length){card.style.display="none";return;}
+  card.style.display="block";
+  box.innerHTML=WISH.map(c=>{
+    const{count}=countOutfits(c);
+    const tag=count>=4?"✅":count>=1?"🟡":"⚠️";
+    return `<div class="stat"><span>${tag} ${c.name} <span style="color:var(--muted);font-size:12px">(${CATS[c.cat]}·${c.color})</span></span>
+      <span><span class="v" style="font-size:14px">${count} 套</span>
+      <button class="btn sm ghost" style="margin-left:8px" onclick="buyWish('${c.id}')">買了</button>
+      <button class="btn sm ghost" onclick="rmWish('${c.id}')">移除</button></span></div>`;
+  }).join("");
+}
+function buyWish(id){
+  const c=WISH.find(x=>x.id===id);if(!c)return;
+  DB.push({id:uid(),name:c.name,cat:c.cat,color:c.color,season:c.season,formal:c.formal,price:0,wears:0,photo:c.photo||""});
+  save();WISH=WISH.filter(x=>x.id!==id);saveWish();renderCloset();renderWishlist();
+  document.getElementById("wishResult").innerHTML=`<div class="insight" style="margin-top:16px">🎉 已把「${c.name}」加進你的衣櫃!</div>`;
+}
+function rmWish(id){WISH=WISH.filter(x=>x.id!==id);saveWish();renderWishlist();}
+
+renderCloset();
+renderQuiz();
+renderWishlist();
+if(suitedColors())renderColorResult();
+if(!PROFILE)document.getElementById("onboard").classList.add("show");
+else applyProfile();
+</script>
+
+<!-- Free, in-browser AI for clothing-type detection (no key, no cost) -->
+<script type="module">
+import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2";
+env.allowLocalModels = false;
+
+// free, in-browser background removal (no key, runs locally; ~40MB model downloads once)
+window.SW_removeBg = async (dataUrl) => {
+  const { removeBackground } = await import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm");
+  const blob = await removeBackground(dataUrl,{model:"isnet_quint8",output:{format:"image/png"}});
+  return await new Promise(res=>{const fr=new FileReader();fr.onload=e=>res(e.target.result);fr.readAsDataURL(blob);});
+};
+const LABELS = [
+  ["a photo of a shirt, t-shirt, top or blouse", "top"],
+  ["a photo of pants, trousers, jeans, shorts or a skirt", "bottom"],
+  ["a photo of a dress", "dress"],
+  ["a photo of a coat, jacket or outerwear", "outerwear"],
+  ["a photo of shoes, sneakers, heels or boots", "shoes"],
+  ["a photo of a handbag, bag, backpack or purse", "bag"],
+  ["a photo of an accessory like a hat, scarf, belt or jewelry", "accessory"],
+];
+// finer sub-types within each category (best-effort, editable by user)
+const SUBTYPES = {
+  top:[["a t-shirt","T恤"],["a shirt or blouse","襯衫"],["a knit sweater","針織衫"],["a hoodie or sweatshirt","衛衣"],["a tank top or camisole","背心"],["a polo shirt","Polo衫"]],
+  bottom:[["jeans","牛仔褲"],["wide-leg pants","寬褲"],["dress trousers or slacks","西裝褲"],["shorts","短褲"],["a skirt","裙子"],["leggings","內搭褲"]],
+  dress:[["a casual day dress","洋裝"],["a formal evening gown","禮服"],["a slip dress","吊帶裙"],["a knit dress","針織洋裝"]],
+  outerwear:[["a blazer or suit jacket","西裝外套"],["a long wool coat","大衣"],["a denim jacket","丹寧外套"],["a puffer down jacket","羽絨外套"],["a cardigan","開襟衫"],["a trench coat","風衣"]],
+  shoes:[["sneakers","球鞋"],["high heels","高跟鞋"],["boots","靴子"],["loafers or flats","平底鞋"],["sandals","涼鞋"]],
+  bag:[["a tote bag","托特包"],["a crossbody bag","斜背包"],["a backpack","後背包"],["a clutch or purse","手拿包"]],
+  accessory:[["a hat or cap","帽子"],["a scarf","圍巾"],["a belt","腰帶"],["a necklace or jewelry","飾品"],["sunglasses","太陽眼鏡"]],
+};
+let classifier = null;
+async function getClassifier(){
+  if(!classifier) classifier = await pipeline("zero-shot-image-classification","Xenova/clip-vit-base-patch32");
+  return classifier;
+}
+window.SW_classify = async (dataUrl) => {
+  const clf = await getClassifier();
+  const out = await clf(dataUrl, LABELS.map(l=>l[0]));
+  if(!out || !out.length) return null;
+  const top = out[0].label;
+  const match = LABELS.find(l=>l[0]===top);
+  return match ? match[1] : null;
+};
+window.SW_subtype = async (dataUrl, cat) => {
+  const set = SUBTYPES[cat];
+  if(!set) return "";
+  const clf = await getClassifier();
+  const out = await clf(dataUrl, set.map(s=>s[0]));
+  if(!out || !out.length) return "";
+  const m = set.find(s=>s[0]===out[0].label);
+  return m ? m[1] : "";
+};
+</script>
+</body>
+</html>
